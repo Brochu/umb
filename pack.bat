@@ -1,3 +1,4 @@
 @echo off
 
-cl main.c -nologo -Zi -link -out:umb.exe
+cl main.c -c -nologo -Od -Zi -TC -std:clatest
+link main.obj -WX -NOLOGO -DEBUG:FULL -PDB:umb.pdb -OUT:umb.exe
