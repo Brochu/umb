@@ -20,11 +20,20 @@ int umb_init(const char *p) {
     return EXIT_SUCCESS;
 }
 
+int umb_commit() {
+    return EXIT_SUCCESS;
+}
+
+int umb_tag() {
+    return EXIT_SUCCESS;
+}
+
 int main(int argc, const char **argv) {
     SetTraceLogLevel(LOG_DEBUG);
 
     if (argc <= 1) {
         umb_usage();
+        return EXIT_SUCCESS;
     }
     else {
         if (strcmp(argv[1], "init") == 0) {
@@ -35,7 +44,14 @@ int main(int argc, const char **argv) {
                 return umb_init(argv[2]);
             }
         }
+        else if (strcmp(argv[1], "commit") == 0) {
+            return umb_commit();
+        }
+        else if (strcmp(argv[1], "tag") == 0) {
+            return umb_tag();
+        }
     }
 
+    TraceLog(LOG_ERROR, "[UMB] Could not execute requested command");
     return EXIT_FAILURE;
 }
