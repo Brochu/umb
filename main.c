@@ -1,10 +1,26 @@
 #include <stdio.h>
+#include <windows.h>
+
+const char *path = NULL;
+
+void usage() {
+    printf("usage: umb <command> [<args>]\n\n"
+    "commands: \n"
+    "\tinit -> Initializes directory for umb\n"
+    "\n");
+}
 
 int main(int argc, char **argv) {
-    printf("[UMB] arg count = %i\n", argc);
-
-    for (int i = 0; i < argc; ++i) {
-        printf("\t - '%s'\n", argv[i]);
+    if (argc <= 1) {
+        usage();
     }
-    return 0;
+    else {
+        printf("Running exe: '%s'\n", argv[0]);
+
+        DWORD len = 0;
+        char dir[128];
+        len = GetCurrentDirectory(0, NULL);
+        GetCurrentDirectory(len, dir);
+        printf("PWD: '%s'\n", dir);
+    }
 }
