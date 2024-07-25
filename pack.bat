@@ -1,3 +1,3 @@
 @echo off
 
-cl main.c -nologo -Wall -Zi -link -out:umb.exe
+cl main.c -nologo -Zi -link -out:umb.exe
