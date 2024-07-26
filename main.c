@@ -4,6 +4,13 @@
 
 #include "raylib.h"
 
+#define WIN32_LEAN_AND_MEAN
+#define NOGDI
+#define NOUSER
+#include <windows.h>
+#undef near
+#undef far
+
 const char *dir = NULL;
 
 void umb_usage() {
@@ -17,6 +24,16 @@ int umb_init(const char *p) {
     dir = (p == NULL) ? GetWorkingDirectory() : p;
     TraceLog(LOG_DEBUG, "[UMB] Calling 'init' command with <dir> = '%s'\n", dir);
 
+    if (IsPathFile(dir)) {
+        TraceLog(LOG_ERROR, "[UMB] Path specified '%s' is already a file", dir);
+        return EXIT_FAILURE;
+    }
+
+    if (!DirectoryExists(dir)) {
+        TraceLog(LOG_DEBUG, "[UMB] Could not find path '%s', Create it", dir);
+        //strcat_s(NULL, 0, NULL);
+    }
+    // Create folders to hold meta data of UMB project
     return EXIT_SUCCESS;
 }
 
