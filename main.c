@@ -11,26 +11,34 @@
 #undef near
 #undef far
 
-const char *dir = NULL;
-
 void umb_usage() {
     printf("usage: umb <command> [<args>]\n\n"
     "commands: \n"
-    "\tinit [<dir>] -> Initializes <dir> directory for umb (will default to current directory)\n"
+    "\tinit [<name>] -> Initializes project <name> in current directory for umb.\n"
     "\n");
 }
 
-int umb_init(const char *p) {
-    dir = (p == NULL) ? GetWorkingDirectory() : p;
-    TraceLog(LOG_DEBUG, "[UMB] Calling 'init' command with <dir> = '%s'\n", dir);
+int umb_init(const char *name) {
+    const char *dir = GetWorkingDirectory();
+    size_t dirlen = strlen(dir);
 
-    if (IsPathFile(dir)) {
-        TraceLog(LOG_ERROR, "[UMB] Path specified '%s' is already a file", dir);
+    char path[512];
+    strncpy_s(path, 512, dir, strlen(dir));
+    path[dirlen] = '\\';
+    path[dirlen+1] = '\0';
+
+    strcat_s(path, 512, name);
+    TraceLog(LOG_DEBUG, "[UMB] Calling 'init' command", dir);
+    TraceLog(LOG_DEBUG, "\t dir = '%s'", dir);
+    TraceLog(LOG_DEBUG, "\t path = '%s'", path);
+
+    if (IsPathFile(path)) {
+        TraceLog(LOG_ERROR, "[UMB] Path specified '%s' is already a file", path);
         return EXIT_FAILURE;
     }
 
-    if (!DirectoryExists(dir)) {
-        TraceLog(LOG_DEBUG, "[UMB] Could not find path '%s', Create it", dir);
+    if (!DirectoryExists(path)) {
+        TraceLog(LOG_DEBUG, "[UMB] Could not find path '%s', Create it", path);
         //strcat_s(NULL, 0, NULL);
     }
     // Create folders to hold meta data of UMB project
