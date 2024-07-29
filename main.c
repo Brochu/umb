@@ -39,9 +39,9 @@ int umb_init(const char *name) {
 
     if (!DirectoryExists(path)) {
         TraceLog(LOG_DEBUG, "[UMB] Could not find path '%s', Create it", path);
-        //strcat_s(NULL, 0, NULL);
+        //TODO: Look at a way to make this OS agnostic?
+        CreateDirectory(path, NULL);
     }
-    // Create folders to hold meta data of UMB project
     return EXIT_SUCCESS;
 }
 
