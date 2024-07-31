@@ -62,11 +62,12 @@ int main(int argc, const char **argv) {
     }
     else {
         if (strcmp(argv[1], "init") == 0) {
-            if (argc == 2) {
-                return umb_init(NULL);
+            if (argc == 3 && strlen(argv[2]) > 0) {
+                return umb_init(argv[2]);
             }
             else {
-                return umb_init(argv[2]);
+                TraceLog(LOG_ERROR, "[UMB] Specify the new project's name");
+                return EXIT_FAILURE;
             }
         }
         else if (strcmp(argv[1], "commit") == 0) {
