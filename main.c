@@ -11,6 +11,9 @@
 #undef near
 #undef far
 
+//TODO: Look into max lenght for path
+#define PATH_LEN 512
+
 void umb_usage() {
     printf("usage: umb <command> [<args>]\n\n"
     "commands: \n"
@@ -21,27 +24,36 @@ void umb_usage() {
 int umb_init(const char *name) {
     const char *dir = GetWorkingDirectory();
     size_t dirlen = strlen(dir);
+    size_t namelen = strlen(name);
+    size_t pathlen = dirlen + 1 + namelen;
 
-    char path[512];
-    strncpy_s(path, 512, dir, strlen(dir));
-    path[dirlen] = '\\';
-    path[dirlen+1] = '\0';
+    char path[PATH_LEN];
+    strncpy_s(path, PATH_LEN, dir, dirlen);
+    strcat_s(path, PATH_LEN, "\\");
+    strcat_s(path, PATH_LEN, name);
 
-    strcat_s(path, 512, name);
-    TraceLog(LOG_DEBUG, "[UMB] Calling 'init' command", dir);
-    TraceLog(LOG_DEBUG, "\t dir = '%s'", dir);
-    TraceLog(LOG_DEBUG, "\t path = '%s'", path);
+    char metapath[PATH_LEN];
+    strncpy_s(metapath, PATH_LEN, path, pathlen);
+    strcat_s(metapath, PATH_LEN, "\\.repo");
 
-    if (IsPathFile(path)) {
-        TraceLog(LOG_ERROR, "[UMB] Path specified '%s' is already a file", path);
-        return EXIT_FAILURE;
-    }
+    char refpath[PATH_LEN];
+    strncpy_s(refpath, PATH_LEN, metapath, pathlen+6);
+    strcat_s(refpath, PATH_LEN, "\\refs");
+    char tagpath[PATH_LEN];
+    strncpy_s(tagpath, PATH_LEN, metapath, pathlen+6);
+    strcat_s(tagpath, PATH_LEN, "\\tags");
+    char snappath[PATH_LEN];
+    strncpy_s(snappath, PATH_LEN, metapath, pathlen+6);
+    strcat_s(snappath, PATH_LEN, "\\snapshots");
 
-    if (!DirectoryExists(path)) {
-        TraceLog(LOG_DEBUG, "[UMB] Could not find path '%s', Create it", path);
-        //TODO: Look at a way to make this OS agnostic?
-        CreateDirectory(path, NULL);
-    }
+    TraceLog(LOG_DEBUG, "[UMB] Calling 'init' command");
+    TraceLog(LOG_DEBUG, "\t [%zu] dir = '%s'", dirlen, dir);
+    TraceLog(LOG_DEBUG, "\t [%zu] path = '%s'", pathlen, path);
+    TraceLog(LOG_DEBUG, "\t [%zu] meta = '%s'", pathlen+6, metapath);
+    TraceLog(LOG_DEBUG, "\t [%zu] refs = '%s'", pathlen+6+5, refpath);
+    TraceLog(LOG_DEBUG, "\t [%zu] tags = '%s'", pathlen+6+5, tagpath);
+    TraceLog(LOG_DEBUG, "\t [%zu] snap = '%s'", pathlen+6+10, snappath);
+
     return EXIT_SUCCESS;
 }
 
