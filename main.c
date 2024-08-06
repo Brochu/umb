@@ -17,7 +17,7 @@
 void umb_usage() {
     printf("usage: umb <command> [<args>]\n\n"
     "commands: \n"
-    "\tinit [<name>] -> Initializes project <name> in current directory for umb.\n"
+    "\tinit <name> -> Initializes project <name> in current directory for umb.\n"
     "\n");
 }
 
@@ -53,6 +53,18 @@ int umb_init(const char *name) {
     TraceLog(LOG_DEBUG, "\t [%zu] refs = '%s'", pathlen+6+5, refpath);
     TraceLog(LOG_DEBUG, "\t [%zu] tags = '%s'", pathlen+6+5, tagpath);
     TraceLog(LOG_DEBUG, "\t [%zu] snap = '%s'", pathlen+6+10, snappath);
+
+    if (IsPathFile(path)) {
+        TraceLog(LOG_ERROR, "[UMB] Project's name corresponds to an existing file");
+        return EXIT_FAILURE;
+    }
+    if (DirectoryExists(metapath)) {
+        TraceLog(LOG_ERROR, "[UMB] Projet's directory already contains a .repo directory");
+        return EXIT_FAILURE;
+    }
+    if (!DirectoryExists(path)) {
+        TraceLog(LOG_DEBUG, "[UMB] Need to create a new directory for the project");
+    }
 
     return EXIT_SUCCESS;
 }
